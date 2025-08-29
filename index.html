@@ -9,15 +9,20 @@
       margin: 10px;
     }
 
-    #container {
+    .folder-header {
+      font-weight: bold;
+      margin: 15px 0 5px 0;
+    }
+
+    .grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 5px;
     }
 
-    #container img {
+    .grid img {
       width: 100%;
-      aspect-ratio: 1 / 1; /* keep images square */
+      aspect-ratio: 1 / 1;
       object-fit: contain;
       cursor: pointer;
       border: 1px solid #ccc;
@@ -37,15 +42,26 @@
       .then(response => response.json())
       .then(folders => {
         for (let folder in folders) {
-          const files = folders[folder];
-          files.forEach(file => {
+          // Folder header
+          const header = document.createElement("div");
+          header.className = "folder-header";
+          header.textContent = folder;
+          container.appendChild(header);
+
+          // Grid for this folder
+          const grid = document.createElement("div");
+          grid.className = "grid";
+
+          folders[folder].forEach(file => {
             const url = baseUrl + encodeURIComponent(folder) + "/" + encodeURIComponent(file);
             const img = document.createElement("img");
             img.src = url;
             img.alt = file;
             img.onclick = () => navigator.clipboard.writeText(url);
-            container.appendChild(img);
+            grid.appendChild(img);
           });
+
+          container.appendChild(grid);
         }
       })
       .catch(err => console.error("Failed to load stickers:", err));
