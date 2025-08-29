@@ -4,51 +4,79 @@
   <meta charset="UTF-8">
   <title>Sticker Picker</title>
   <style>
-    body { font-family: sans-serif; margin: 20px; background: #f5f5f5; }
-    h1 { margin-bottom: 1em; }
-    .folder-buttons { margin-bottom: 1em; }
+    body { font-family: sans-serif; margin: 10px; background: #f5f5f5; }
+    h1 { font-size: 1.2em; margin-bottom: 10px; text-align: center; }
+
+    /* Folder buttons bar */
+    .folder-buttons {
+      display: flex;
+      overflow-x: auto;
+      padding: 8px 0;
+      gap: 8px;
+      scrollbar-width: none; /* Firefox */
+    }
+    .folder-buttons::-webkit-scrollbar { display: none; } /* Chrome, Safari */
+
     .folder-buttons button {
-      margin-right: 10px;
-      padding: 6px 12px;
+      flex: 0 0 auto;
       border: none;
-      border-radius: 6px;
-      background: #333;
-      color: white;
+      border-radius: 10px;
+      background: white;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
       cursor: pointer;
+      padding: 0;
+      text-align: center;
+      width: 80px;
+      overflow: hidden;
     }
     .folder-buttons button.active {
-      background: #0077ff;
+      outline: 3px solid #0077ff;
     }
+    .folder-buttons button img {
+      width: 100%;
+      height: 60px;
+      object-fit: cover;
+      border-bottom: 1px solid #ddd;
+    }
+    .folder-buttons button span {
+      display: block;
+      font-size: 0.75em;
+      padding: 4px;
+    }
+
+    /* Sticker grid */
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-      gap: 10px;
+      gap: 8px;
+      margin-top: 12px;
     }
     .sticker {
       background: white;
       border-radius: 8px;
-      padding: 5px;
+      padding: 4px;
       box-shadow: 0 1px 3px rgba(0,0,0,0.1);
       text-align: center;
       cursor: pointer;
-      transition: transform 0.1s;
     }
-    .sticker:hover { transform: scale(1.05); }
     .sticker img {
       max-width: 100%;
-      max-height: 100px;
+      max-height: 90px;
       border-radius: 4px;
     }
+
+    /* Copied message */
     .copied {
       position: fixed;
-      bottom: 20px;
+      bottom: 15px;
       left: 50%;
       transform: translateX(-50%);
       background: #0077ff;
       color: white;
-      padding: 8px 16px;
+      padding: 6px 14px;
       border-radius: 6px;
       display: none;
+      font-size: 0.9em;
     }
   </style>
 </head>
@@ -59,90 +87,16 @@
   <div class="copied" id="copied">Copied!</div>
 
   <script>
-    // 🔑 Define your folders + sticker lists
     const folders = {
       "girlslasttour": [
         "650965398@2x.png",
         "650965399@2x.png",
-        "650965401@2x.png",
-        "650965402@2x.png",
-        "650965403@2x.png",
-        "650965404@2x.png",
-        "650965405@2x.png",
-        "650965406@2x.png",
-        "650965407@2x.png",
-        "650965408@2x.png",
-        "650965409@2x.png",
-        "650965410@2x.png",
-        "650965411@2x.png",
-        "650965412@2x.png",
-        "650965413@2x.png",
-        "650965414@2x.png",
-        "650965415@2x.png",
-        "650965416@2x.png",
-        "650965417@2x.png",
-        "650965418@2x.png",
-        "650965419@2x.png",
-        "650965420@2x.png",
-        "650965421@2x.png",
-        "650965422@2x.png",
-        "650965423@2x.png",
-        "650965424@2x.png",
-        "650965425@2x.png",
-        "650965426@2x.png",
-        "650965427@2x.png",
-        "650965428@2x.png",
-        "650965429@2x.png",
-        "650965430@2x.png",
-        "650965431@2x.png",
-        "650965432@2x.png",
-        "650965433@2x.png",
-        "650965434@2x.png",
-        "650965435@2x.png",
-        "650965436@2x.png",
-        "650965437@2x.png" 
+        "650965401@2x.png"
       ],
       "oreimo": [
         "3832863@2x.png",
         "3832864@2x.png",
-        "3832865@2x.png",
-        "3832866@2x.png",
-        "3832867@2x.png",
-        "3832868@2x.png",
-        "3832869@2x.png",
-        "3832870@2x.png",
-        "3832871@2x.png",
-        "3832872@2x.png",
-        "3832873@2x.png",
-        "3832874@2x.png",
-        "3832875@2x.png",
-        "3832876@2x.png",
-        "3832877@2x.png",
-        "3832878@2x.png",
-        "3832879@2x.png",
-        "3832880@2x.png",
-        "3832881@2x.png",
-        "3832882@2x.png",
-        "3832883@2x.png",
-        "3832884@2x.png",
-        "3832885@2x.png",
-        "3832886@2x.png",
-        "3832887@2x.png",
-        "3832888@2x.png",
-        "3832889@2x.png",
-        "3832890@2x.png",
-        "3832891@2x.png",
-        "3832892@2x.png",
-        "3832893@2x.png",
-        "3832894@2x.png",
-        "3832895@2x.png",
-        "3832896@2x.png",
-        "3832897@2x.png",
-        "3832898@2x.png",
-        "3832899@2x.png",
-        "3832900@2x.png",
-        "3832901@2x.png",
-        "3832902@2x.png"
+        "3832865@2x.png"
       ]
     };
 
@@ -172,18 +126,22 @@
     function copyUrl(url) {
       navigator.clipboard.writeText(url).then(() => {
         copied.style.display = "block";
-        setTimeout(() => copied.style.display = "none", 1000);
+        setTimeout(() => copied.style.display = "none", 800);
       });
     }
 
-    // init
+    // init buttons with preview images
     for (let folder in folders) {
       const btn = document.createElement("button");
-      btn.textContent = folder;
       btn.dataset.folder = folder;
+      btn.innerHTML = `
+        <img src="${baseUrl + folder + '/' + folders[folder][0]}" alt="">
+        <span>${folder}</span>
+      `;
       btn.onclick = () => showFolder(folder);
       folderButtons.appendChild(btn);
     }
+
     // show first folder by default
     showFolder(Object.keys(folders)[0]);
   </script>
